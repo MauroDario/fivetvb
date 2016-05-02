@@ -149,7 +149,7 @@
             <div class="row">
                 <div class="col-md-8">
                     <div class="col-md-2"></div>
-                    <div class="col-md-3">
+                    <div class="col-md-4">
                         <label id="lblFecha" for="txtFecha" runat="server">Fecha de Evento</label>
                         <div class="form-inline">
                             <asp:TextBox ID="txtFecha" Type="Date" class="form-control" runat="server" Width="60%" ReadOnly="true"></asp:TextBox>
@@ -159,7 +159,7 @@
                         </div>
                         <br />
                     </div>
-                    <div class="col-md-7" style="padding-left:20px; border-left: 1px solid black;">
+                    <div class="col-md-6" style="padding-left:20px; border-left: 1px solid black;">
                         <asp:Label ID="TablaCommentFiles" runat="server"></asp:Label>
                     </div>
                 </div>

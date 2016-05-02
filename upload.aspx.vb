@@ -116,7 +116,7 @@ Partial Class upload
     'metodo encargado de realizar la asociacion
     Protected Sub ButtonDownloadContent(source As Object, e As DataListCommandEventArgs)
         If (e.CommandName.ToString().Equals("Download")) Then
-
+            StatusLabel.Text = String.Empty
             Dim filename As String = e.CommandArgument.ToString()
             Dim oConn As New OleDbConnection
             Dim oComm As New OleDbCommand
@@ -127,7 +127,6 @@ Partial Class upload
             oConn.Open()
 
             Dim strConn As String = "SELECT Files.id_files FROM Files WHERE Files.id_caballo = @idCaballo AND Files.Nombre Like '%" & filename & "%'"
-            'And Files.Nombre = @nombre"
             oComm.Connection = oConn
             oComm.CommandText = strConn
             oComm.Parameters.AddWithValue("idCaballo", Session("ID"))
@@ -141,6 +140,27 @@ Partial Class upload
 
             oDR.Close()
             oConn.Close()
+
+            'validacion de asociacion repetida
+            If (Not String.IsNullOrEmpty(idFile)) Then
+                oConn.Open()
+
+                strConn = "SELECT id_files, id_comment FROM files_comment WHERE id_files = " & idFile & " and id_comment =" & Session("CommentId")
+                oComm.CommandText = strConn
+                oDR = oComm.ExecuteReader()
+                Dim aux As String = String.Empty
+                Do While oDR.Read()
+                    aux = oDR.Item(0).ToString
+                Loop
+
+                If (Not String.IsNullOrEmpty(aux)) Then
+                    StatusLabel.Text = "Upload status: El Archivo ya esta asociado."
+                    Return
+                End If
+                oDR.Close()
+                oConn.Close()
+
+            End If
 
             oConn.Open()
 
