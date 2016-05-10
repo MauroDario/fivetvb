@@ -174,17 +174,17 @@ Partial Class Ficha
         Do While oDR.Read()
             idComment = oDR.Item(0).ToString()
             If String.IsNullOrEmpty(oDR.Item(4).ToString()) Then
-                dateValue = Format(oDR.Item(3), "yyyy-MM-dd")
+                dateValue = DateTime.Parse(oDR.Item(3)).ToString("dd/MM/yyyy")
                 lblFecha.InnerText = "Fecha de Comentario"
             Else
-                dateValue = Format(oDR.Item(4), "yyyy-MM-dd")
+                dateValue = DateTime.Parse(oDR.Item(4)).ToString("dd/MM/yyyy")
                 lblFecha.InnerText = "Fecha de Evento"
             End If
 
             lblUsuario.Text = oDR.Item(2).ToString
             txtFecha.Text = dateValue
             txtDescripcion.Text = oDR.Item(5)
-            idComentario.Text = oDR.Item(0)
+            'idComentario.Text = oDR.Item(0)
             Flag = True
         Loop
 
@@ -245,7 +245,7 @@ Partial Class Ficha
 
         oConn.ConnectionString = ConfigurationManager.ConnectionStrings("Haras").ConnectionString & Server.MapPath("App_Data/Haras.mdb")
 
-        strConn = "SELECT historias.id_historia, Caballos.nombre, Usuarios.Usuario, historias.fecha, historias.descripcion  "
+        strConn = "SELECT historias.id_historia, Caballos.nombre, Usuarios.Usuario, historias.fecha, historias.fecha_evento, historias.descripcion  "
         strConn += "FROM Usuarios INNER JOIN (Caballos INNER JOIN historias ON Caballos.id_caballo = historias.id_caballo) ON Usuarios.id_usuario = historias.id_usuario "
         strConn += "WHERE historias.id_caballo = " & pID
         strConn += " ORDER BY historias.id_historia DESC"
@@ -260,9 +260,17 @@ Partial Class Ficha
         strTable = "<table class='table table-hover'>"
         strTable += "<tr><td>Usuario</td><td>Fecha</td><td>Descripcion</td><td></td><td></td></tr>"
 
+        Dim dateValue As String
+
         Do While oDR.Read()
 
-            strTable += "<tr onclick=""location.href='Ficha.aspx?ID=" & ID & "&Detalle=" & oDR.Item(0) & "&action=ver'""><td>" & oDR.Item(2) & "</td><td>" & Mid(oDR.Item(3), 1, 10) & "</td><td>" & Mid(oDR.Item(4), 1, 30) & "...</td>"
+            If String.IsNullOrEmpty(oDR.Item(4).ToString()) Then
+                dateValue = DateTime.Parse(oDR.Item(3)).ToString("dd/MM/yyyy") & "*"
+            Else
+                dateValue = DateTime.Parse(oDR.Item(4)).ToString("dd/MM/yyyy")
+            End If
+
+            strTable += "<tr onclick=""location.href='Ficha.aspx?ID=" & ID & "&Detalle=" & oDR.Item(0) & "&action=ver'""><td>" & oDR.Item(2) & "</td><td>" & dateValue & "</td><td>" & Mid(oDR.Item(5), 1, 30) & "...</td>"
 
 
             'strTable += "<tr><td>"
@@ -362,9 +370,9 @@ Partial Class Ficha
 
             strConn = "SELECT MAX(id_historia) FROM historias"
             oComm.CommandText = strConn
-            Dim idComentario As String = oComm.ExecuteScalar()
+            Dim idComentarioAux As String = oComm.ExecuteScalar()
 
-            strConn = "UPDATE historias SET fecha_evento = '" & txtFecha.Text & "' WHERE id_historia = " & idComentario
+            strConn = "UPDATE historias SET fecha_evento = '" & txtFecha.Text & "' WHERE id_historia = " & idComentarioAux
 
             oComm.CommandText = strConn
             oComm.ExecuteNonQuery()
@@ -396,12 +404,14 @@ Partial Class Ficha
             lblUsuario.Text = oDR.Item(0).ToString
             txtDescripcion.Text = oDR.Item(3).ToString
             If String.IsNullOrEmpty(oDR.Item(2).ToString()) Then
-                txtFecha.Text = Format(oDR.Item(1), "yyyy-MM-dd")
+                txtFecha.Text = DateTime.Parse(oDR.Item(1)).ToString("dd/MM/yyyy")
                 lblFecha.InnerText = "Fecha de Comentario"
             Else
-                txtFecha.Text = Format(oDR.Item(2), "yyyy-MM-dd")
+                txtFecha.Text = DateTime.Parse(oDR.Item(2)).ToString("dd/MM/yyyy")
                 lblFecha.InnerText = "Fecha de Evento"
             End If
+
+            idComentario.Text = pID
 
             Flag = True
         Loop

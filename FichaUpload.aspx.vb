@@ -23,6 +23,8 @@ Partial Class upload
                 Dim filename As String = Path.GetFileName(FileUploadControl.FileName)
                 Dim PathName As String = Server.MapPath("~/Images/" & Session("ID") & "/default.jpg")
                 FileUploadControl.SaveAs(PathName)
+                PathName = Server.MapPath("~/Images/" & Session("ID") & "/Documents/" & filename)
+                FileUploadControl.SaveAs(PathName)
                 StatusLabel.Text = "Upload status: Archivos subidos OK"
                 InsertPath(filename, Session("ID"))
             Catch ex As Exception

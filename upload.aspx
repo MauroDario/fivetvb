@@ -40,7 +40,7 @@
             <br />
             <br />
             <asp:Label runat="server" ID="StatusLabel" />
-            <asp:Panel runat="server" ID="filesPanel"  Visible="false">
+            <asp:Panel runat="server" ID="filesPanel" Visible="false">
                 <div class="row">
                     <div class="col-md-12">
                         <asp:DataList ID="DataListContent" runat="server" OnItemCommand="ButtonDownloadContent"
@@ -58,6 +58,7 @@
                 </div>
             </asp:Panel>
         </form>
+ 
     </div>
 </body>
 </html>
