@@ -460,7 +460,7 @@ Partial Class Ficha
         Dim oIcon As String
 
         Files = "<table>"
-        Files += "<tr><td>File</td><td>Fecha</td><td></td></tr>"
+        Files += "<tr><td>File</td><td>Fecha</td><td></td><td></td></tr>"
         Do While oDR.Read()
             Dim extension As String = Extraer("Images\" & pID & "\Documents\" & oDR.Item(1).ToString, ".")
 
@@ -481,6 +481,9 @@ Partial Class Ficha
             Files += "<tr>"
             Files += "<td><span class='" & oIcon & "'></span>&nbsp;<a href='Images\" & pID & "\Documents\" & oDR.Item(1).ToString & "'>" & oDR.Item(1).ToString & "</a></td>"
             Files += "<td>" & oDR.Item(2).ToString & "</td><td><a href='FichaRemove.aspx?IdFile=" & oDR.Item(0).ToString & "&FileName=" & oDR.Item(1).ToString & "'><button type='button' class='btn btn-default btn-xs'><span class='glyphicon glyphicon-remove'></span></td>"
+            Files += "<td>"
+            Files += "<button type='button' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#myModal' data-path='" & oDR.Item(1).ToString & "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>"
+            Files += "</td>"
             Files += "</tr>"
 
         Loop
@@ -574,7 +577,13 @@ Partial Class Ficha
         CargarTablaComentarios(ID)
     End Sub
 
-    'Protected Sub btnAsociarImagen_Click(sender As Object, e As EventArgs) Handles btnAsociarImagen.Click
-    '    Response.Redirect("Upload.aspx?id=" & Session("ID") & "&CommentId" & Request.QueryString("Detalle").ToString())
-    'End Sub
+    Protected Sub btnRename_Click(sender As Object, e As EventArgs)
+        If (Not String.IsNullOrEmpty(txtFilePath.Value) And Not String.IsNullOrEmpty(txtFileName.Text)) Then
+            Try
+                FileSystem.Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFileName.Text)
+            Catch ex As Exception
+                txtFileName.Text = "Upload status: " & ex.Message
+            End Try
+        End If
+    End Sub
 End Class

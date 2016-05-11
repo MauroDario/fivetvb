@@ -77,10 +77,6 @@
             </div>
         </div>
         <!-- contenido gral -->
-
-
-
-
         <!-- Begin page content -->
         <form id="frmFicha" class="form-horizontal" runat="server">
             <div class="container">
@@ -159,7 +155,7 @@
                         </div>
                         <br />
                     </div>
-                    <div class="col-md-6" style="padding-left:20px; border-left: 1px solid black;">
+                    <div class="col-md-6" style="padding-left: 20px; border-left: 1px solid black;">
                         <asp:Label ID="TablaCommentFiles" runat="server"></asp:Label>
                     </div>
                 </div>
@@ -190,9 +186,26 @@
                     </div>
                 </div>
             </div>
+            <!-- Modal para cambiar el nombre del archivo -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Renombrar</h4>
+                        </div>
+                        <div class="modal-body">
+                            <asp:HiddenField ID="txtFilePath" runat="server" />
+                            <asp:TextBox ID="txtFileName" runat="server"></asp:TextBox>
+                            <asp:Button ID="btnRename" runat="server" Text="Button" CssClass="btn btn-primary" OnClick="btnRename_Click" />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </form>
 
     </div>
+
 
     <div id="openModal" class="modalDialog">
         <div>
@@ -201,6 +214,13 @@
             <asp:Label ID="ImageModal" runat="server"></asp:Label>
         </div>
     </div>
+    <script type="text/javascript">
+        $('#myModal').on('shown.bs.modal', function (e) {
+            var path = e.relatedTarget.attributes["data-path"].value
+            $('#txtFilePath').val(path);
+            console.log($('#txtFilePath').val(path));
+        })
+    </script>
 </body>
 </html>
 
