@@ -482,7 +482,7 @@ Partial Class Ficha
             Files += "<td><span class='" & oIcon & "'></span>&nbsp;<a href='Images\" & pID & "\Documents\" & oDR.Item(1).ToString & "'>" & oDR.Item(1).ToString & "</a></td>"
             Files += "<td>" & oDR.Item(2).ToString & "</td><td><a href='FichaRemove.aspx?IdFile=" & oDR.Item(0).ToString & "&FileName=" & oDR.Item(1).ToString & "'><button type='button' class='btn btn-default btn-xs'><span class='glyphicon glyphicon-remove'></span></td>"
             Files += "<td>"
-            Files += "<button type='button' class='btn btn-primary btn-lg' data-toggle='modal' data-target='#myModal' data-path='" & oDR.Item(1).ToString & "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>"
+            Files += "<button type='button' class='btn btn-primary btn-xs' data-toggle='modal' data-target='#myModal' data-pathFile='" & oDR.Item(1).ToString() & "' data-idFile='" & oDR.Item(0).ToString() & "'><span class='glyphicon glyphicon-pencil' aria-hidden='true'></span></button>"
             Files += "</td>"
             Files += "</tr>"
 
@@ -580,10 +580,27 @@ Partial Class Ficha
     Protected Sub btnRename_Click(sender As Object, e As EventArgs)
         If (Not String.IsNullOrEmpty(txtFilePath.Value) And Not String.IsNullOrEmpty(txtFileName.Text)) Then
             Try
-                FileSystem.Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFileName.Text)
+                RenombrarArchivo()
+                Response.Redirect(Request.RawUrl.TrimStart("/"))
             Catch ex As Exception
                 txtFileName.Text = "Upload status: " & ex.Message
             End Try
         End If
+    End Sub
+
+    Protected Sub RenombrarArchivo()
+        ' Renombrar archivo en file system
+        FileSystem.Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFileName.Text)
+
+        ' Renombrar archivo en base de datos
+        oConn.ConnectionString = ConfigurationManager.ConnectionStrings("Haras").ConnectionString & Server.MapPath("App_Data/Haras.mdb")
+        oConn.Open()
+
+        strConn = "UPDATE Files SET Nombre = '" & txtFileName.Text & "' WHERE id_files = " + txtFileId.Value + ""
+
+        oComm.Connection = oConn
+        oComm.CommandText = strConn
+        oComm.ExecuteNonQuery()
+        oConn.Close()
     End Sub
 End Class
