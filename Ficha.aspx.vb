@@ -1,6 +1,7 @@
 ﻿Imports System
 Imports System.Data
 Imports System.Data.OleDb
+Imports System.IO
 
 Partial Class Ficha
     Inherits System.Web.UI.Page
@@ -589,14 +590,17 @@ Partial Class Ficha
     End Sub
 
     Protected Sub RenombrarArchivo()
-        ' Renombrar archivo en file system
-        FileSystem.Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFileName.Text)
+        ' Armo el nombre nuevo conservando el formato.
+        Dim newFileName As String = txtFileName.Text.Substring(0, txtFileName.Text.LastIndexOf(".")) & Path.GetExtension(txtFilePath.Value)
 
-        ' Renombrar archivo en base de datos
+        ' Renombrar archivo en File System.
+        Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & newFileName)
+
+        ' Renombrar archivo en Base de Datos.
         oConn.ConnectionString = ConfigurationManager.ConnectionStrings("Haras").ConnectionString & Server.MapPath("App_Data/Haras.mdb")
         oConn.Open()
 
-        strConn = "UPDATE Files SET Nombre = '" & txtFileName.Text & "' WHERE id_files = " + txtFileId.Value + ""
+        strConn = "UPDATE Files SET Nombre = '" & newFileName & "' WHERE id_files = " + txtFileId.Value + ""
 
         oComm.Connection = oConn
         oComm.CommandText = strConn

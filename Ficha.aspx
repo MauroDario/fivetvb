@@ -227,7 +227,10 @@
         $('#myModal').on('shown.bs.modal', function (e) {
             var path = e.relatedTarget.attributes["data-pathFile"].value
             var id = e.relatedTarget.attributes["data-idFile"].value
-            $('#txtFileOldName').val(path);
+            
+            var pathWithoutFormat = path.substr(0, path.lastIndexOf('.'));
+            
+            $('#txtFileOldName').val(pathWithoutFormat);
             $('#txtFilePath').val(path);
             $('#txtFileId').val(id);
         })
