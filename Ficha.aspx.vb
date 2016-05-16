@@ -591,7 +591,12 @@ Partial Class Ficha
 
     Protected Sub RenombrarArchivo()
         ' Armo el nombre nuevo conservando el formato.
-        Dim newFileName As String = txtFileName.Text.Substring(0, txtFileName.Text.LastIndexOf(".")) & Path.GetExtension(txtFilePath.Value)
+        Dim newFileName As String = String.Empty
+        If (txtFileName.Text.LastIndexOf(".") >= 0) Then
+            newFileName = txtFileName.Text.Substring(0, txtFileName.Text.LastIndexOf(".")) & Path.GetExtension(txtFilePath.Value)
+        Else
+            newFileName = txtFileName.Text & Path.GetExtension(txtFilePath.Value)
+        End If
 
         ' Renombrar archivo en File System.
         Rename(Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & txtFilePath.Value, Server.MapPath("~/Images/" & Session("ID") & "/Documents/") & newFileName)
